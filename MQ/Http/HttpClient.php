@@ -7,6 +7,7 @@ use MQ\AsyncCallback;
 use MQ\Config;
 use MQ\Constants;
 use MQ\Exception\MQException;
+use MQ\Model\TopicMessage;
 use MQ\Requests\BaseRequest;
 use MQ\Responses\BaseResponse;
 use MQ\Responses\MQPromise;
@@ -24,30 +25,28 @@ class HttpClient
 
     private $agent;
 
-    public function __construct($endPoint, $accessId,
-        $accessKey, $securityToken = NULL, Config $config = NULL)
+    public function __construct($endPoint, $accessId, $accessKey, $securityToken = NULL, Config $config = NULL)
     {
-        if ($config == NULL)
-        {
+        if ($config == NULL) {
             $config = new Config;
         }
-        $this->accessId = $accessId;
-        $this->accessKey = $accessKey;
-        $this->client = new \GuzzleHttp\Client([
+        $this->accessId       = $accessId;
+        $this->accessKey      = $accessKey;
+        $this->client         = new \GuzzleHttp\Client([
             'base_uri' => $endPoint,
             'defaults' => [
                 'headers' => [
                     'Host' => $endPoint
                 ],
-                'proxy' => $config->getProxy(),
-                'expect' => $config->getExpectContinue()
+                'proxy'   => $config->getProxy(),
+                'expect'  => $config->getExpectContinue()
             ]
         ]);
         $this->requestTimeout = $config->getRequestTimeout();
         $this->connectTimeout = $config->getConnectTimeout();
-        $this->securityToken = $securityToken;
-        $this->endpoint = $endPoint;
-        $guzzleVersion = '';
+        $this->securityToken  = $securityToken;
+        $this->endpoint       = $endPoint;
+        $guzzleVersion        = '';
         if (defined('\GuzzleHttp\Client::VERSION')) {
             $guzzleVersion = \GuzzleHttp\Client::VERSION;
         } else {
@@ -58,26 +57,23 @@ class HttpClient
 
     private function addRequiredHeaders(BaseRequest &$request)
     {
-        $body = $request->generateBody();
+        $body        = $request->generateBody();
         $queryString = $request->generateQueryString();
 
         $request->setBody($body);
         $request->setQueryString($queryString);
 
         $request->setHeader(Constants::USER_AGENT, $this->agent);
-        if ($body != NULL)
-        {
+        if ($body != NULL) {
             $request->setHeader(Constants::CONTENT_LENGTH, strlen($body));
         }
         $request->setHeader('Date', gmdate(Constants::GMT_DATE_FORMAT));
-        if (!$request->isHeaderSet(Constants::CONTENT_TYPE))
-        {
+        if (!$request->isHeaderSet(Constants::CONTENT_TYPE)) {
             $request->setHeader(Constants::CONTENT_TYPE, 'text/xml');
         }
         $request->setHeader(Constants::VERSION_HEADER, Constants::VERSION_VALUE);
 
-        if ($this->securityToken != NULL)
-        {
+        if ($this->securityToken != NULL) {
             $request->setHeader(Constants::SECURITY_TOKEN, $this->securityToken);
         }
 
@@ -93,7 +89,7 @@ class HttpClient
         return new MQPromise($promise, $response);
     }
 
-    public function sendRequest(BaseRequest $request, BaseResponse &$response)
+    public function sendRequest(BaseRequest $request, BaseResponse &$response): TopicMessage
     {
         $promise = $this->sendRequestAsync($request, $response);
         return $promise->wait();
@@ -103,9 +99,9 @@ class HttpClient
     {
         $this->addRequiredHeaders($request);
 
-        $parameters = array('exceptions' => false, 'http_errors' => false);
+        $parameters  = array('exceptions' => false, 'http_errors' => false);
         $queryString = $request->getQueryString();
-        $body = $request->getBody();
+        $body        = $request->getBody();
         if ($queryString != NULL) {
             $parameters['query'] = $queryString;
         }
@@ -113,17 +109,15 @@ class HttpClient
             $parameters['body'] = $body;
         }
 
-        $parameters['timeout'] = $this->requestTimeout;
+        $parameters['timeout']         = $this->requestTimeout;
         $parameters['connect_timeout'] = $this->connectTimeout;
 
         $request = new Request(strtoupper($request->getMethod()),
             $request->getResourcePath(), $request->getHeaders());
-        try
-        {
-            if ($callback != NULL)
-            {
+        try {
+            if ($callback != NULL) {
                 return $this->client->sendAsync($request, $parameters)->then(
-                    function ($res) use (&$response, $callback) {
+                    function($res) use (&$response, $callback) {
                         try {
                             $response->setRequestId($res->getHeaderLine("x-mq-request-id"));
                             $callback->onSucceed($response->parseResponse($res->getStatusCode(), $res->getBody()));
@@ -132,14 +126,10 @@ class HttpClient
                         }
                     }
                 );
-            }
-            else
-            {
+            } else {
                 return $this->client->sendAsync($request, $parameters);
             }
-        }
-        catch (TransferException $e)
-        {
+        } catch (TransferException $e) {
             $message = $e->getMessage();
             if ($e->hasResponse()) {
                 $message = $e->getResponse()->getBody();

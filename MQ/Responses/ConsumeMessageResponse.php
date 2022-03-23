@@ -22,7 +22,7 @@ class ConsumeMessageResponse extends BaseResponse
         return $this->messages;
     }
 
-    public function parseResponse($statusCode, $content)
+    public function parseResponse($statusCode, $content): array
     {
         $this->statusCode = $statusCode;
         if ($statusCode == 200) {

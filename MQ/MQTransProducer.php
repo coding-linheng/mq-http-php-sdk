@@ -3,8 +3,8 @@ namespace MQ;
 
 use MQ\Exception\InvalidArgumentException;
 use MQ\Http\HttpClient;
-use MQ\Requests\ConsumeMessageRequest;
 use MQ\Requests\AckMessageRequest;
+use MQ\Requests\ConsumeMessageRequest;
 use MQ\Responses\AckMessageResponse;
 use MQ\Responses\ConsumeMessageResponse;
 
@@ -12,7 +12,7 @@ class MQTransProducer extends MQProducer
 {
     private $groupId;
 
-    function __construct(HttpClient $client, $instanceId = NULL, $topicName, $groupId)
+    function __construct(HttpClient $client, $instanceId, $topicName, $groupId)
     {
         if (empty($groupId)) {
             throw new InvalidArgumentException(400, "GroupId is null");

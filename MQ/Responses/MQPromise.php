@@ -3,6 +3,7 @@ namespace MQ\Responses;
 
 use GuzzleHttp\Exception\TransferException;
 use GuzzleHttp\Promise\PromiseInterface;
+use MQ\Model\TopicMessage;
 use Psr\Http\Message\ResponseInterface;
 
 class MQPromise
@@ -31,12 +32,11 @@ class MQPromise
         return $this->promise->getState();
     }
 
-    public function wait()
+    public function wait(): TopicMessage
     {
         try {
             $res = $this->promise->wait();
-            if ($res instanceof ResponseInterface)
-            {
+            if ($res instanceof ResponseInterface) {
                 $this->response->setRequestId($res->getHeaderLine("x-mq-request-id"));
                 return $this->response->parseResponse($res->getStatusCode(), $res->getBody());
             }
@@ -50,5 +50,3 @@ class MQPromise
         $this->response->parseErrorResponse("500", "Unknown");
     }
 }
-
-?>

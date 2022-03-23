@@ -13,14 +13,14 @@ class MQProducer
     protected $topicName;
     protected $client;
 
-    function __construct(HttpClient $client, $instanceId = NULL, $topicName)
+    function __construct(HttpClient $client, $instanceId, $topicName)
     {
         if (empty($topicName)) {
             throw new InvalidArgumentException(400, "TopicName is null");
         }
         $this->instanceId = $instanceId;
-        $this->client = $client;
-        $this->topicName = $topicName;
+        $this->client     = $client;
+        $this->topicName  = $topicName;
     }
 
     public function getInstanceId() {

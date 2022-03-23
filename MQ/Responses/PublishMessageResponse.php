@@ -16,7 +16,7 @@ class PublishMessageResponse extends BaseResponse
     {
     }
 
-    public function parseResponse($statusCode, $content)
+    public function parseResponse($statusCode, $content): TopicMessage
     {
         $this->statusCode = $statusCode;
         if ($statusCode == 201) {
@@ -80,4 +80,4 @@ class PublishMessageResponse extends BaseResponse
     }
 }
 
-?>
+

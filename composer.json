@@ -1,8 +1,16 @@
 {
-    "name": "aliyunmq/mq-http-sdk",
+    "name": "coding-lin/hyperf-rocketmq",
     "type": "library",
-    "description": "Aliyun Message Queue(MQ) Http PHP SDK, PHP>=5.5.0",
-    "keywords": ["Aliyun","Alicloud", "MQ", "Message Queue", "Message", "Queue"],
+    "description": "Adapted hyperf component modified based on Alibaba Cloud SDK",
+    "keywords": [
+        "Aliyun",
+        "Alicloud",
+        "MQ",
+        "Message Queue",
+        "Message",
+        "Queue",
+        "Hyperf"
+    ],
     "homepage": "https://github.com/aliyunmq/mq-http-php-sdk",
     "license": "MIT",
     "require": {
@@ -15,9 +23,14 @@
             "url": "https://packagist.phpcomposer.com"
         }
     },
-    "autoload":{
+    "autoload": {
         "psr-4": {
             "MQ\\": "MQ/"
+        }
+    },
+    "extra": {
+        "hyperf": {
+            "config": "MQ\\ConfigProvider"
         }
     }
 }
