@@ -15,9 +15,9 @@ mv composer.phar /usr/local/bin/composer
 Add require to your `composer.json`
 ```json
 {
-  "require": {
-     "aliyunmq/mq-http-sdk": ">=1.0.3"
-  }
+    "require": {
+        "coding-linheng/mq-http-sdk": ">=1.0.3"
+    }
 }
 ```
 Use Composer to install requires
