@@ -1,5 +1,5 @@
 {
-    "name": "coding-lin/mq-http-php-sdk",
+    "name": "code-linheng/mq-http-php-sdk",
     "type": "library",
     "description": "Adapted hyperf component modified based on Alibaba Cloud SDK",
     "keywords": [
