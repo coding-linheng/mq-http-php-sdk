@@ -1,4 +1,5 @@
 <?php
+
 namespace MQ\Responses;
 
 use GuzzleHttp\Exception\TransferException;
@@ -13,7 +14,7 @@ class MQPromise
 
     public function __construct(PromiseInterface &$promise, BaseResponse &$response)
     {
-        $this->promise = $promise;
+        $this->promise  = $promise;
         $this->response = $response;
     }
 
@@ -32,7 +33,10 @@ class MQPromise
         return $this->promise->getState();
     }
 
-    public function wait(): TopicMessage
+    /**
+     * @return TopicMessage|array
+     */
+    public function wait()
     {
         try {
             $res = $this->promise->wait();

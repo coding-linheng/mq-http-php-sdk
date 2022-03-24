@@ -7,7 +7,6 @@ use MQ\AsyncCallback;
 use MQ\Config;
 use MQ\Constants;
 use MQ\Exception\MQException;
-use MQ\Model\TopicMessage;
 use MQ\Requests\BaseRequest;
 use MQ\Responses\BaseResponse;
 use MQ\Responses\MQPromise;
@@ -89,7 +88,7 @@ class HttpClient
         return new MQPromise($promise, $response);
     }
 
-    public function sendRequest(BaseRequest $request, BaseResponse &$response): TopicMessage
+    public function sendRequest(BaseRequest $request, BaseResponse &$response)
     {
         $promise = $this->sendRequestAsync($request, $response);
         return $promise->wait();
